@@ -14,18 +14,14 @@ Accounts::~Accounts() { //Destructor
 }
 
 bool Accounts::add_account(vector<Account>& accounts, string name){
-	size_t size = accounts.size();
-	for (size_t i{ 0 }; i < size; i++) {
-		if (accounts[i].get_name() == name) {
+	for (auto& a : accounts) {
+		if (a.get_name() == name)
 			return false;
-		}
-		else
-			continue;
-		break;
 	}
 	Account addAccount(name);
 	accounts.push_back(addAccount);
 	return true;
+
 }
 
 void Accounts::set_account_balance(vector<Account>& accounts,int i,long double bal) {
@@ -62,13 +58,22 @@ void Accounts::transfer(vector <Account>& accounts, int i) { //make sure to subt
 	}
 	
 }
-void Accounts::display_accounts(vector<Account>& accounts) const {
-	size_t size = accounts.size();
+bool Accounts::display_accounts(vector<Account>& accounts) const {
+	int i = 1;
+	if (accounts.size() == 0) {
+		return false;
+	}
 	cout << "----- ACCOUNTS -----" << endl;
-	for (size_t i{ 0 }; i < size; i++) {
-		cout << i + 1 << ".)" << accounts[i].get_name() << endl;
+	for (auto& x : accounts) {
+		cout << i++ <<".) "<< x.get_name() << endl;
 	}
 }
 void Accounts::name(vector<Account>& accounts, int i) {
 	cout << accounts[i].get_name() << endl;
+}
+
+void Accounts::delete_account(std::vector<Account>& accounts, int i)
+{
+	accounts.erase(accounts.begin() + i);
+	std::cout << "Successfully Deleted." << std::endl;
 }
