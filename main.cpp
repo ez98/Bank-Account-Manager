@@ -23,6 +23,7 @@ void show_list(){
     cout << "3.) Withdrawal." << endl;
     cout << "4.) Check Balance." << endl;
     cout << "5.) Transfer Funds." << endl;
+    cout << "6.) Delete Account." << endl;
     cout << "L.) Logout." << endl;
     cout << endl; 
     }
@@ -35,6 +36,7 @@ void main_menu() {
 string name() {
     char choice;
     string name;
+    string error = "false";
     string savings{ "Savings" };
     string checkings{ "Checkings" };
     cout << "1.) Savings" << endl;
@@ -46,11 +48,16 @@ string name() {
         return savings;
     if (choice == '2')
         return checkings;
-    if (choice == '3') 
+    if (choice == '3')
     {
         cout << "Enter account name: ";
         getline(cin, name);
         return name;
+    }
+    else
+    {
+        cout << "Invalid Choice" << endl;
+        return error; 
     }
 }
 char get_choice() {
@@ -105,13 +112,17 @@ int main(){
         case '1': 
         { //If they create a new account, we create a case to add the acct and display the acct manager
             add_name = name();
+            if (add_name == "false")
+                break;
             add_account(accounts, my_accounts, add_name);
-            Sleep(1000);
             break;
         }
         case '2': //make sure to check if accounts exists first, let user know that no acct exists and send back to menu
         {
-            my_accounts.display_accounts(accounts);
+            if (!(my_accounts.display_accounts(accounts))) {
+                cout << "No Accounts to Display." << endl;
+                break;
+            }
             int i = choose_account() - 1; 
             welcome(accounts, my_accounts, i);
             managing_account = true;
@@ -120,19 +131,30 @@ int main(){
                 char choice = get_choice();
                 cin.ignore();
                 switch (choice) {
+            
                 case '1': 
                 {
                     long double bal;
                     cout << "Set your balance: $";
                     cin >> bal;
+                    while (bal < 0) {
+                        cout << "\nCannot be a negative value!" << endl;
+                        cout << "Enter your balance: $";
+                        cin >> bal;
+                    }
                     my_accounts.set_account_balance(accounts, i, bal);
                     break;
                 }
                 case '2':
                 {
-                    long double dep;
-                    cout << "Deposit: $";
+                    long double dep{};
+                    cout << "Enter your deposit: $";
                     cin >> dep;
+                    while (dep < 0) {
+                        cout << "\nCannot be a negative value!" << endl;
+                        cout << "Enter your deposit: $";
+                        cin >> dep;
+                    }
                     my_accounts.account_deposit(accounts, i, dep);
                     break;
                 }
@@ -141,6 +163,11 @@ int main(){
                     long double wthdrl;
                     cout << "Withdraw: $";
                     cin >> wthdrl;
+                    while (wthdrl < 0) {
+                        cout << "\nCannot be a negative value!" << endl;
+                        cout << "Withdraw: $";
+                        cin >> wthdrl;
+                    }
                     my_accounts.account_withdraw(accounts, i, wthdrl);
                     break;
                 }
@@ -153,6 +180,19 @@ int main(){
                 {
                     my_accounts.transfer(accounts, i);
                     break;
+                }
+                case '6':
+                {
+                    char user_choice;
+                    cout << "\nAre you sure? (Y/N): ";
+                    cin >> user_choice;
+                    if (tolower(user_choice) == 'y') {
+                        my_accounts.delete_account(accounts, i);
+                        managing_account = false;
+                        break;
+                    }
+                    else
+                        break;
                 }
                 case ('l'):
                 case ('L'):
@@ -169,6 +209,18 @@ int main(){
             }
             break;
         }
+        case 'e':
+        case 'E':
+        {
+            cout << "Exiting Account Manager..." << endl;
+            managing_menu = false;
+            break;
+            
+        }
+        default:
+            cout << "Invalid Choice." << endl;
+            break;
+          
         }
     }
         return 0;
