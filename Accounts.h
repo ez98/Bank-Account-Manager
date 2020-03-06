@@ -24,9 +24,11 @@ public:
 
 	void view_balance(std::vector<Account>& accounts, int i);
 
-	void display_accounts(std::vector<Account>& accounts) const; //Displays a list of accounts available
+	bool display_accounts(std::vector<Account>& accounts) const; //Displays a list of accounts available
 
 	void name(std::vector<Account>& accounts, int i);
+
+	void delete_account(std::vector<Account>& accounts, int i);
 };
 
 
